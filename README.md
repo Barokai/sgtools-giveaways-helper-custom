@@ -15,7 +15,7 @@ authors  Mole & Archi
 Enhanced create giveaway feature - added 3 buttons for 3 giveaway groups (BundleQuest, RPGTreasury, Unlucky-7) which will be chosen automatically on click.
 Also the gifttype is chosen and the description was adapted.
 
-Other features untouched, see details here: [[UserScript] SGTools Helper]https://www.steamgifts.com/discussion/JxijX/userscript-sgtools-helper
+Other features untouched, see details here: [UserScript SGTools Helper]https://www.steamgifts.com/discussion/JxijX/userscript-sgtools-helper
 
 ---
 
