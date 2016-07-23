@@ -3,7 +3,7 @@
 // @namespace    *://www.sgtools.info/
 // @version      1.7.1
 // @description  Makes your life easier!
-// @author       Barkai | www.loigistal.at (Enhanced version of KnSYS which is based on a work from Mole & Archi. See below)
+// @author       Barokai | www.loigistal.at (Enhanced version of KnSYS which is based on a work from Mole & Archi. See below)
 // @description  Enhanced create giveaway feature - added 3 buttons for 3 giveaway groups (BundleQuest, RPGTreasury, Unlucky-7) which will be chosen automatically on click.
 // @homepage     https://github.com/Barokai/sgtools-giveaways-helper-custom/
 // @license      https://github.com/Barokai/sgtools-giveaways-helper-custom/blob/master/LICENSE
