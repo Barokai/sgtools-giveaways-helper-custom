@@ -1,7 +1,8 @@
 // ==UserScript==
 // @name         SGTools Giveaways Helper (Custom by Barokai)
+// @icon         https://cdn.steamgifts.com/img/favicon.ico
 // @namespace    *://www.sgtools.info/
-// @version      1.7.1
+// @version      1.7.2
 // @description  Makes your life easier!
 // @author       Barokai | www.loigistal.at (Enhanced version of KnSYS which is based on a work from Mole & Archi. See below)
 // @description  Enhanced create giveaway feature - added 3 buttons for 3 giveaway groups (BundleQuest, RPGTreasury, Unlucky-7) which will be chosen automatically on click.
