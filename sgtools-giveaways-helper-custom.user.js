@@ -2,7 +2,7 @@
 // @name         SGTools Giveaways Helper (Custom by Barokai)
 // @icon         https://cdn.steamgifts.com/img/favicon.ico
 // @namespace    *://www.sgtools.info/
-// @version      1.7.4
+// @version      1.7.5
 // @description  Makes your life easier!
 // @author       Barokai | www.loigistal.at (Enhanced version of KnSYS which is based on a work from Mole & Archi. See below)
 // @description  Enhanced create giveaway feature - added 3 buttons for 3 giveaway groups (BundleQuest, RPGTreasury, Unlucky-7) which will be chosen automatically on click.
@@ -37,24 +37,27 @@
     var DEFAULT_DESCRIPTION = "**Good Luck!**";
     var GROUPS = {
         "none": {
-            name : "",
+            name: "",
             level: 1,
-            description: DEFAULT_DESCRIPTION },
+            description: DEFAULT_DESCRIPTION
+        },
         "boxofkittens": {
-            name : "Box of Kittens!",
+            name: "Box of Kittens!",
             level: DEFAULT_LEVEL,
             description: DEFAULT_DESCRIPTION + "\n\nComment with a funny gif ;)"
         },
-        "bundlequest":{
-            name : "Bundle Quest",
+        "bundlequest": {
+            name: "Bundle Quest",
             level: DEFAULT_LEVEL,
-            description: DEFAULT_DESCRIPTION + "\n\n*This Giveaway is a normal/free/XX% discount giveaway.*" },
+            description: DEFAULT_DESCRIPTION + "\n\n*This Giveaway is a normal/free/XX% discount giveaway.*"
+        },
         "rpgtreasury": {
-            name :  "RPG Treasury",
+            name: "RPG Treasury",
             level: DEFAULT_LEVEL,
-            description: DEFAULT_DESCRIPTION },
-        "unlucky7":  {
-            name : "Unlucky-7",
+            description: DEFAULT_DESCRIPTION
+        },
+        "unlucky7": {
+            name: "Unlucky-7",
             level: DEFAULT_LEVEL,
             description: DEFAULT_DESCRIPTION + "\n\nOpen for gifters, but please make sure that your [gift difference](http://i.imgur.com/69WNFSw.png) is above 7.0 or higher.\nYou can check yours [here](https://www.steamgifts.com/group/WWF2y/unlucky-7/users)."
         }
@@ -101,31 +104,34 @@
     }
 
     function giveawayNew() {
-        let getGroupButtons = function(){
+        let getGroupButtons = function() {
             var buttonMarkup = "";
             $.each(GROUPS, function(key, g) {
-                // debugger;
-                var groupname = g.name !== "" ? " for " + g.name : "";
-                var id = "sgToolsBtn_"+key;
-                buttonMarkup += '  <div class="form__row__indent"><div class="form__submit-button" id="'+id+'"><i class="fa fa-fast-forward"></i>&nbsp;Fill default settings' + groupname + '</div>&nbsp;</div>';
+                //var groupname = g.name !== "" ? " for " + g.name : "";
+                var groupname = g.name || "default";
+                var icon = groupname !== "default" ? "group" : "gift";
+                var id = "sgToolsBtn_" + key;
+                //buttonMarkup += '  <div class="form__row__indent"><div class="form__submit-button" id="' + id + '"><i class="fa fa-fast-forward"></i>&nbsp;Fill default settings' + groupname + '</div>&nbsp;</div>';
+                buttonMarkup += '  <div class="form__submit-button" id="' + id + '"><i class="fa fa-'+ icon +'"></i>&nbsp;' + groupname + '</div>&nbsp;';
             });
             return buttonMarkup;
         };
 
-        let bindOnClick = function(){
+        let bindOnClick = function() {
             $.each(GROUPS, function(key, group) {
-                var id = "sgToolsBtn_"+key;
-                $("#"+id).click(function() {
+                var id = "sgToolsBtn_" + key;
+                $("#" + id).click(function() {
                     applySettings(group);
+                    console.log("clicked " + (group.name || "default" ) + " button");
                 });
             });
         };
 
         $(".form__rows").prepend(
             '<div class="form__row form__row--sgtools-giveaway-helper">' +
-            '  <div class="form__heading">'+
-            '    <div class="form__heading__number">0.</div>'+
-            '    <div class="form__heading__text">SGTools Giveaway</div>'+
+            '  <div class="form__heading">' +
+            '    <div class="form__heading__number">0.</div>' +
+            '    <div class="form__heading__text">SGTools Giveaway</div>' +
             '  </div>' +
             getGroupButtons() +
             '</div>');
@@ -168,7 +174,7 @@
         };
 
         let applyGroup = function(group) {
-            if (group.name){
+            if (group.name) {
                 var privateButton = $("div[data-checkbox-value='groups']");
                 if (!privateButton.hasClass('is-selected')) {
                     privateButton.trigger("click");
@@ -190,14 +196,26 @@
             levelValue.val(group.level);
             $(".ui-slider-range").css('width', group.level * 10 + "%");
             $(".ui-slider-handle").css('left', group.level * 10 + "%");
-            $(".form__input-description--level").toggleClass("is-hidden");
-            $(".form__input-description--no-level").toggleClass("is-hidden");
-            $("span.form__level").text("level " + group.level);
+            if (group.level > 0) {
+                $(".form__input-description--level").removeClass("is-hidden");
+                $(".form__input-description--no-level").addClass("is-hidden");
+                $("span.form__level").text("level " + group.level);
+            } else {
+                $(".form__input-description--no-level").removeClass("is-hidden");
+                $(".form__input-description--level").addClass("is-hidden");
+            }
+
         };
 
-        let reset = function(){
+        let reset = function() {
             $(".form__checkbox.is-disabled").show();
-            // TODO: unselect groups, key/gift selection, set level to 0 ?
+            $('div.form__group.form__group--steam.is-selected').click(); // deselect all previously selected groups
+            $("div[data-checkbox-value='everyone']").click(); // set "who can enter" to everyone
+            var group = {
+                level: 0
+            };
+            applyLevel(group); // reset level to 0
+            console.log("resetted checkboxes/groups/level")
         };
 
         let applySettings = function(group) {
