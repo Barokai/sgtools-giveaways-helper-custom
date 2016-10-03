@@ -2,7 +2,7 @@
 // @name         SGTools Giveaways Helper (Custom by Barokai)
 // @icon         https://cdn.steamgifts.com/img/favicon.ico
 // @namespace    *://www.sgtools.info/
-// @version      1.7.6
+// @version      1.7.7
 // @description  Makes your life easier!
 // @author       Barokai | www.loigistal.at (Enhanced version of KnSYS which is based on a work from Mole & Archi. See below)
 // @description  Enhanced create giveaway feature - added 3 buttons for 3 giveaway groups (BundleQuest, RPGTreasury, Unlucky-7) which will be chosen automatically on click.
@@ -35,6 +35,7 @@
 
     var DEFAULT_LEVEL = 0;
     var DEFAULT_DESCRIPTION = "**Good Luck!**";
+    var DISCLAIMER = "\n\n**Please notice**:\nThere is a very small chance that the key was already redeemed (happens if i forget to note that) - if thats the case, write a comment/message and I’ll send you a new key/steamgift!";
     var GROUPS = {
         "none": {
             name: "",
@@ -215,7 +216,7 @@
                 level: 0
             };
             applyLevel(group); // reset level to 0
-            console.log("resetted checkboxes/groups/level")
+            console.log("resetted checkboxes/groups/level");
         };
 
         let applySettings = function(group) {
