@@ -2,7 +2,7 @@
 // @name         SGTools Giveaways Helper (Custom by Barokai)
 // @icon         https://cdn.steamgifts.com/img/favicon.ico
 // @namespace    *://www.sgtools.info/
-// @version      1.7.5
+// @version      1.7.6
 // @description  Makes your life easier!
 // @author       Barokai | www.loigistal.at (Enhanced version of KnSYS which is based on a work from Mole & Archi. See below)
 // @description  Enhanced create giveaway feature - added 3 buttons for 3 giveaway groups (BundleQuest, RPGTreasury, Unlucky-7) which will be chosen automatically on click.
@@ -39,27 +39,27 @@
         "none": {
             name: "",
             level: 1,
-            description: DEFAULT_DESCRIPTION
+            description: DEFAULT_DESCRIPTION + DISCLAIMER
         },
         "boxofkittens": {
             name: "Box of Kittens!",
             level: DEFAULT_LEVEL,
-            description: DEFAULT_DESCRIPTION + "\n\nComment with a funny gif ;)"
+            description: DEFAULT_DESCRIPTION + "\n\nComment with a funny gif ;)" + DISCLAIMER
         },
         "bundlequest": {
             name: "Bundle Quest",
             level: DEFAULT_LEVEL,
-            description: DEFAULT_DESCRIPTION + "\n\n*This Giveaway is a normal/free/XX% discount giveaway.*"
+            description: DEFAULT_DESCRIPTION + "\n\n*This Giveaway is a normal/free/XX% discount giveaway.*" + DISCLAIMER
         },
         "rpgtreasury": {
             name: "RPG Treasury",
             level: DEFAULT_LEVEL,
-            description: DEFAULT_DESCRIPTION
+            description: DEFAULT_DESCRIPTION + DISCLAIMER
         },
         "unlucky7": {
             name: "Unlucky-7",
             level: DEFAULT_LEVEL,
-            description: DEFAULT_DESCRIPTION + "\n\nOpen for gifters, but please make sure that your [gift difference](http://i.imgur.com/69WNFSw.png) is above 7.0 or higher.\nYou can check yours [here](https://www.steamgifts.com/group/WWF2y/unlucky-7/users)."
+            description: DEFAULT_DESCRIPTION + "\n\nOpen for gifters, but please make sure that your [gift difference](http://i.imgur.com/69WNFSw.png) is above 7.0 or higher.\nYou can check yours [here](https://www.steamgifts.com/group/WWF2y/unlucky-7/users)." + DISCLAIMER
         }
     };
 
