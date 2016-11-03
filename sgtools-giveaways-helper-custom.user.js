@@ -2,7 +2,7 @@
 // @name         SGTools Giveaways Helper (Custom by Barokai)
 // @icon         https://cdn.steamgifts.com/img/favicon.ico
 // @namespace    *://www.sgtools.info/
-// @version      1.7.8
+// @version      1.7.9
 // @description  Makes your life easier!
 // @author       Barokai | www.loigistal.at (Enhanced version of KnSYS which is based on a work from Mole & Archi. See below)
 // @description  Enhanced create giveaway feature - added 3 buttons for 3 giveaway groups (BundleQuest, RPGTreasury, Unlucky-7) which will be chosen automatically on click.
@@ -145,8 +145,8 @@
         //buttonMarkup += '  <div class="form__submit-button" id="' + id + '"><i class="fa fa-'+ icon +'"></i>&nbsp;' + groupname + '</div>&nbsp;';
         var buttonGroup = '<div class="btn-group">\n' +
           '  <div class="btn-group">\n' +
-          '    <button type="button" class="btn form__submit-button" id="' + id + '"><i class="fa fa-' + icon + '"></i>&nbsp;' + groupname + '&nbsp;</button>\n' +
-          '    <button type="button" class="btn form__submit-button dropdown-toggle" data-toggle="dropdown">\n' +
+          '    <button type="button" class="btn btn-sm btn-success" id="' + id + '"><i class="fa fa-' + icon + '"></i>&nbsp;' + groupname + '</button>\n' +
+          '    <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown">\n' +
           '    <span class="caret"></span>\n' +
           '  </button>\n' +
           '  <ul class="dropdown-menu" role="menu">\n' +
