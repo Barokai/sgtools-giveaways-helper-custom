@@ -2,10 +2,10 @@
 // @name         SGTools Giveaways Helper (Custom by Barokai)
 // @icon         https://cdn.steamgifts.com/img/favicon.ico
 // @namespace    *://www.sgtools.info/
-// @version      1.7.9
+// @version      1.8.1
 // @description  Makes your life easier!
 // @author       Barokai | www.loigistal.at (Enhanced version of KnSYS which is based on a work from Mole & Archi. See below)
-// @description  Enhanced create giveaway feature - added 3 buttons for 3 giveaway groups (BundleQuest, RPGTreasury, Unlucky-7) which will be chosen automatically on click.
+// @description  Enhanced create giveaway feature - add buttons for giveaway groups (default, BundleQuest, RPGTreasury, Unlucky-7, Box of Kittens, German Giveaways, maybee more... ) which will be chosen automatically on click.
 // @homepage     https://github.com/Barokai/sgtools-giveaways-helper-custom/
 // @license      https://github.com/Barokai/sgtools-giveaways-helper-custom/blob/master/LICENSE
 // @updateURL    https://github.com/Barokai/sgtools-giveaways-helper-custom/raw/master/sgtools-giveaways-helper-custom.user.js
@@ -15,7 +15,7 @@
 // @grant        GM_setValue
 // @grant        GM_getValue
 // @resource     bootstrap-css https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css
-// @resource     steamgifts-css https://cdn.steamgifts.com/css/minified_v11.css
+// @resource     steamgifts-css https://cdn.steamgifts.com/css/minified_v18.css
 // @require      https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js
 // @run-at       document-end
 // ==/UserScript==
@@ -39,8 +39,12 @@
   var SGTOOLS_SITE = 'https://www.sgtools.info/';
   var SGTOOLS_TIME = 2 * 24 * 60 * 60 * 1000; // 2 days recommended
 
-  var DEFAULT_LEVEL = 0;
+  var accountText = $("a:contains('Account')").text();
+  var userLevel = accountText.substring(accountText.length - 3, accountText.length - 1).trim();
+
+  var DEFAULT_LEVEL = userLevel;
   var DEFAULT_DESCRIPTION = "## Good Luck!";
+  var DEFAULT_DESCRIPTION_GERMAN = "## Viel Glück!!";
   var DISCLAIMER = "\n\n### Please notice:\nThere is a very small chance that the key was already redeemed (happens if i forget to note that) - if thats the case, write a comment/message and I’ll send you a new key/steamgift!";
   var GROUPS = {
     "none": {
@@ -86,7 +90,7 @@
     "gergive": {
       name: "German Giveaways",
       level: DEFAULT_LEVEL,
-      description: DEFAULT_DESCRIPTION + "\n\nTO BE DONE" + DISCLAIMER,
+      description: DEFAULT_DESCRIPTION_GERMAN, // + "\n\nTO BE DONE" + DISCLAIMER,
       rulesLink: "https://www.steamgifts.com/group/vornn/gergive",
       multiGroupAllowed: "?",
       show: true
@@ -137,12 +141,9 @@
     let getGroupButtons = function () {
       var buttons = "";
       $.each(GROUPS, function (key, g) {
-        //var groupname = g.name !== "" ? " for " + g.name : "";
         var groupname = g.name || "default";
         var icon = groupname !== "default" ? "group" : "gift";
         var id = "sgToolsBtn_" + key;
-        // old // buttonMarkup += '  <div class="form__row__indent"><div class="form__submit-button" id="' + id + '"><i class="fa fa-fast-forward"></i>&nbsp;Fill default settings' + groupname + '</div>&nbsp;</div>';
-        //buttonMarkup += '  <div class="form__submit-button" id="' + id + '"><i class="fa fa-'+ icon +'"></i>&nbsp;' + groupname + '</div>&nbsp;';
         var buttonGroup = '<div class="btn-group">\n' +
           '  <div class="btn-group">\n' +
           '    <button type="button" class="btn btn-sm btn-success" id="' + id + '"><i class="fa fa-' + icon + '"></i>&nbsp;' + groupname + '</button>\n' +
@@ -339,23 +340,26 @@ function addStyles() {
   // re-add steamgifts css to avoid destroying nav bar (http://stackoverflow.com/a/8085921)
   GM_addStyle(steamgiftsCss);
 
-  /*jshint multistr: true */
   // add style for focused inputfield
+  /*jshint multistr: true */
   GM_addStyle("\
-input[type=text], textarea{\
--webkit-transition: all 0.30s ease-in-out;\
--moz-transition: all 0.30s ease-in-out;\
--ms-transition: all 0.30s ease-in-out;\
--o-transition: all 0.30s ease-in-out;\
-outline: none;\
-padding: 3px 0px 3px 3px;\
-margin: 5px 1px 3px 0px;\
-border: 1px solid #DDDDDD;\
-} \
-input[type=text]:focus, textarea:focus {\
-box-shadow: 0 0 5px rgba(81, 203, 238, 1);\
-padding: 3px 0px 3px 3px;\
-margin: 5px 1px 3px 0px;\
-border: 1px solid rgba(81, 203, 238, 1) !important; \
+  input[type=text], textarea{\
+    -webkit-transition: all 0.30s ease-in-out;\
+    -moz-transition: all 0.30s ease-in-out;\
+    -ms-transition: all 0.30s ease-in-out;\
+    -o-transition: all 0.30s ease-in-out;\
+    outline: none;\
+    padding: 3px 0px 3px 3px;\
+    margin: 5px 1px 3px 0px;\
+    border: 1px solid #DDDDDD;\
+  }\
+  input[type=text]:focus, textarea:focus {\
+    box-shadow: 0 0 5px rgba(81, 203, 238, 1);\
+    padding: 3px 0px 3px 3px;\
+    margin: 5px 1px 3px 0px;\
+    border: 1px solid rgba(81, 203, 238, 1) !important; \
+  }\
+  a:hover{\
+    text-decoration: none;\
 }");
 }
