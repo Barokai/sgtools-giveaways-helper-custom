@@ -2,7 +2,7 @@
 // @name         SGTools Giveaways Helper (Custom by Barokai)
 // @icon         https://cdn.steamgifts.com/img/favicon.ico
 // @namespace    *://www.sgtools.info/
-// @version      1.8.1
+// @version      1.8.3
 // @description  Makes your life easier!
 // @author       Barokai | www.loigistal.at (Enhanced version of KnSYS which is based on a work from Mole & Archi. See below)
 // @description  Enhanced create giveaway feature - add buttons for giveaway groups (default, BundleQuest, RPGTreasury, Unlucky-7, Box of Kittens, German Giveaways, maybee more... ) which will be chosen automatically on click.
@@ -20,17 +20,17 @@
 // @run-at       document-end
 // ==/UserScript==
 /* Based on SGTools Giveaways Helper by KnSYS
- * which is
- * Based on Touhou Giveaways Helper
- * https://github.com/Aareksio/touhou-giveaways-helper
- * authors  Mole & Archi
- *
+ * which is based on Touhou Giveaways Helper https://github.com/Aareksio/touhou-giveaways-helper (authors Mole & Archi)
  * MIT License
  */
 
 /* TODO Barokai:
  * set default duration per group
  * set default description per group (eg. unlucky-7: open for gifters or not, bundlequest: free/discount/premium,..)
+ * set short descriptions for buttons, displayed on hover (title property)
+ * add ratio calculation per group (use sg-api?)
+ * add button to only set default time (afte reset button)
+ * add toggle to choose between key or gift, or remove selecting of "Type of Giveaway" totally.
  */
 
 (function () {
@@ -40,20 +40,23 @@
   var SGTOOLS_TIME = 2 * 24 * 60 * 60 * 1000; // 2 days recommended
 
   var accountText = $("a:contains('Account')").text();
-  var userLevel = accountText.substring(accountText.length - 3, accountText.length - 1).trim();
+  var USER_LEVEL = accountText.substring(accountText.length - 3, accountText.length - 1).trim();
 
-  var DEFAULT_LEVEL = userLevel;
+  var DEFAULT_LEVEL = 0;
   var DEFAULT_DESCRIPTION = "## Good Luck!";
   var DEFAULT_DESCRIPTION_GERMAN = "## Viel Glück!!";
   var DISCLAIMER = "\n\n### Please notice:\nThere is a very small chance that the key was already redeemed (happens if i forget to note that) - if thats the case, write a comment/message and I’ll send you a new key/steamgift!";
+// TODO
+  var DISCLAIMER_GERMAN = "\n\n### Please notice:\nThere is a very small chance that the key was already redeemed (happens if i forget to note that) - if thats the case, write a comment/message and I’ll send you a new key/steamgift!";
   var GROUPS = {
     "none": {
       name: "",
-      level: 1,
+      level: USER_LEVEL,
       description: DEFAULT_DESCRIPTION + DISCLAIMER,
       rulesLink: "",
       multiGroupAllowed: true,
-      show: true
+      show: true,
+      title: "creates GA for your current level"
     },
     "boxofkittens": {
       name: "Box of Kittens!",
@@ -75,7 +78,7 @@
       name: "RPG Treasury",
       level: DEFAULT_LEVEL,
       description: DEFAULT_DESCRIPTION + DISCLAIMER,
-      rulesLink: "http://steamcommunity.com/groups/rpgtreasury/discussions/2/350533172680738401/",
+      rulesLink: "http://steamcommunity.com/groups/rpgtreasury/discussions/2/133259227529377841/",
       multiGroupAllowed: false,
       show: true
     },
@@ -90,12 +93,32 @@
     "gergive": {
       name: "German Giveaways",
       level: DEFAULT_LEVEL,
-      description: DEFAULT_DESCRIPTION_GERMAN, // + "\n\nTO BE DONE" + DISCLAIMER,
+      description: DEFAULT_DESCRIPTION_GERMAN + DISCLAIMER_GERMAN,
       rulesLink: "https://www.steamgifts.com/group/vornn/gergive",
       multiGroupAllowed: "?",
       show: true
+    },
+    "AUT-SG":{
+      name: "Österreich's SG's",
+      level: DEFAULT_LEVEL,
+      description: DEFAULT_DESCRIPTION_GERMAN + DISCLAIMER_GERMAN,
+      rulesLink: "http://steamcommunity.com/groups/AUT-SG",
+      multiGroupAllowed: "max. 4 andere Gruppe, alle <350 Mitglieder",
+      show: true
+    },
+    "the123s":{
+      name: "The 123's",
+      level: DEFAULT_LEVEL,
+      description: DEFAULT_DESCRIPTION + DISCLAIMER,
+      rulesLink: "http://steamcommunity.com/groups/the123s",
+      multiGroupAllowed: "1 group exclusive/month, rest can be multigroup",
+      show: true
     }
   };
+
+  // show welcome message in console
+  console.clear();
+  console.log("%cWelcome to "+ GM_info.script.name + ", version " + GM_info.script.version, "color: #bada55; background-color: black;")
 
   var current_path;
   if (/steamgifts\.com/.exec(window.location.href)) {
@@ -144,7 +167,8 @@
         var groupname = g.name || "default";
         var icon = groupname !== "default" ? "group" : "gift";
         var id = "sgToolsBtn_" + key;
-        var buttonGroup = '<div class="btn-group">\n' +
+        var title = g.title || '';
+        var buttonGroup = '<div class="btn-group" title="' + title + '">\n' +
           '  <div class="btn-group">\n' +
           '    <button type="button" class="btn btn-sm btn-success" id="' + id + '"><i class="fa fa-' + icon + '"></i>&nbsp;' + groupname + '</button>\n' +
           '    <button type="button" class="btn btn-sm btn-success dropdown-toggle" data-toggle="dropdown">\n' +
@@ -162,10 +186,13 @@
           buttons += buttonGroup;
         }
       });
-
+      // add reset button
+      buttons += '<button type="button" class="btn btn-sm btn-danger" id="btnReset"><i class="fa fa-refresh"></i>&nbsp; RESET</button>';
       return buttons;
     };
-
+    let getWhistlistCheckBox = function(){
+      return '<div class="form__checkbox"><div><input type="checkbox" value="" id="cbWhitelist">Add Whitelist</div></div>';
+    };
     let bindOnClick = function () {
       $.each(GROUPS, function (key, group) {
         var id = "sgToolsBtn_" + key;
@@ -179,6 +206,8 @@
           console.log("hide group clicked for" + (group.name || "default"));
         });
       });
+      // bind reset button
+      $("#btnReset").click(function(){reset();});
     };
 
     $(".form__rows").prepend(
@@ -187,6 +216,7 @@
       '    <div class="form__heading__number">0.</div>\n' +
       '    <div class="form__heading__text">SGTools Giveaway</div>\n' +
       '  </div>\n' +
+      getWhistlistCheckBox () +
       getGroupButtons() +
       '</div>\n');
     bindOnClick();
@@ -259,13 +289,21 @@
         $(".form__input-description--no-level").removeClass("is-hidden");
         $(".form__input-description--level").addClass("is-hidden");
       }
-
     };
 
+    let applyWhitelist = function(){
+      // click whitelist if hasn't class is-selected and checkbox is checked
+      if($("#cbWhitelist")[0].checked && $('div.form__group.form__group--whitelist.is-selected').length == 0){
+        $("div.form__group.form__group--whitelist").click();
+      }
+    }
+
     let reset = function () {
-      $(".form__checkbox.is-disabled").show();
+      $('.form__checkbox.is-disabled').show();
+      $('div.form__group.form__group--whitelist.is-selected').click(); // deselect whitelist
       $('div.form__group.form__group--steam.is-selected').click(); // deselect all previously selected groups
       $("div[data-checkbox-value='everyone']").click(); // set "who can enter" to everyone
+      $(".form__group.form__group--steam").show(); // show all groups again
       var group = {
         level: 0
       };
@@ -281,9 +319,12 @@
       applyPrivate(group);
       applyDescription(group);
       applyLevel(group);
+      applyWhitelist();
       applyGroup(group);
       // hides not used checkboxes
       $(".form__checkbox.is-disabled").hide();
+      // hide not checked groups
+      $(".form__group.form__group--steam").hide();$(".form__group.form__group--steam.is-selected").show();
       // focus input to enter game name
       $(".js__autocomplete-name").focus();
     };
@@ -297,15 +338,12 @@
   /* Helpers */
   function removeFromArray(arr, item) {
     for (let i = arr.length; i--;) {
-      if (arr[i] === item) {
-        arr.splice(i, 1);
-      }
+      if (arr[i] === item) { arr.splice(i, 1); }
     }
   }
 
+  // Fixed by Archi for all SG weird dates, do not touch
   function formatDate(date) {
-    // Fixed by Archi for all SG weird dates, do not touch
-
     // Fix hours
     let hours = date.getHours();
     let ampm = '';
@@ -331,7 +369,6 @@
     return $.datepicker.formatDate('M d, yy', date) + " " + hours + ":" + minutes + " " + ampm;
   }
 })();
-
 
 function addStyles() {
   var bootstrapCss = GM_getResourceText("bootstrap-css");
@@ -361,5 +398,12 @@ function addStyles() {
   }\
   a:hover{\
     text-decoration: none;\
-}");
+  }\
+  .btn-group{\
+    margin-bottom: 1px;\
+  }\
+  .form__groups{\
+    height: 100px !important;\
+  }"
+  );
 }
